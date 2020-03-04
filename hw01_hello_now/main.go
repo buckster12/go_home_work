@@ -14,7 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error: ", err)
 	}
-	dateFormat := "2006-01-02 15:04:05 +0000 UTC"
-	fmt.Printf("current time: %s\n", currentTime.Format(dateFormat))
-	fmt.Printf("exact time: %s\n", ntpTime.UTC().Format(dateFormat))
+	//dateFormat := "2006-01-02 15:04:05 +0000 UTC"
+	fmt.Printf("current time: %s\n", currentTime)
+	fmt.Printf("exact time: %s\n", ntpTime.UTC())
 }
