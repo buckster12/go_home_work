@@ -12,6 +12,42 @@ type test struct {
 	err      error
 }
 
+func TestMyOwns(t *testing.T) {
+	for _, tst := range [...]test{
+		{
+			input:    "a\t4b\t4c",
+			expected: "a\t\t\t\tb\t\t\t\tc",
+		},
+		{
+			input:    `qw\\\ne`,
+			expected: "",
+			err:      ErrInvalidString,
+		},
+		{
+			input:    "a1b1c1",
+			expected: "abc",
+		},
+		{
+			input:    `a\$`,
+			expected: "",
+			err:      ErrInvalidString,
+		},
+		{
+			input:    "A5",
+			expected: "AAAAA",
+		},
+		{
+			input:    `test\`,
+			expected: "",
+			err:      ErrInvalidString,
+		},
+	} {
+		result, err := Unpack(tst.input)
+		require.Equal(t, tst.err, err)
+		require.Equal(t, tst.expected, result)
+	}
+}
+
 func TestUnpack(t *testing.T) {
 	for _, tst := range [...]test{
 		{
@@ -49,7 +85,7 @@ func TestUnpack(t *testing.T) {
 }
 
 func TestUnpackWithEscape(t *testing.T) {
-	t.Skip() // Remove if task with asterisk completed
+	//t.Skip() // Remove if task with asterisk completed
 
 	for _, tst := range [...]test{
 		{
