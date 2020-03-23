@@ -36,6 +36,11 @@ func TestMyOwns(t *testing.T) {
 			input:    "A5",
 			expected: "AAAAA",
 		},
+		{
+			input:    `test\`,
+			expected: "",
+			err:      ErrInvalidString,
+		},
 	} {
 		result, err := Unpack(tst.input)
 		require.Equal(t, tst.err, err)
