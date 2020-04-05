@@ -1,4 +1,4 @@
-module github.com/buckster12/hw03_frequency_analysis
+module github.com/buckster12/go_home_work/hw03_frequency_analysis
 
 go 1.14
 
