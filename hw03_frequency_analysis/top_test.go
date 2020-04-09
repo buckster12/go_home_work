@@ -7,7 +7,7 @@ import (
 )
 
 // Change to true if needed
-var taskWithAsteriskIsCompleted = false
+var taskWithAsteriskIsCompleted = AsteriskValues
 
 var text = `Как видите, он  спускается  по  лестнице  вслед  за  своим
 	другом   Кристофером   Робином,   головой   вниз,  пересчитывая
@@ -48,6 +48,14 @@ func TestTop10(t *testing.T) {
 		assert.Len(t, Top10(""), 0)
 	})
 
+	t.Run("Digits in words", func(t *testing.T) {
+		textWithDigits := `a1 b2 c3 c3`
+		if AllowDigitsInWords {
+			assert.Subset(t, []string{"c3", "b2", "a1"}, Top10(textWithDigits))
+		} else {
+			assert.Len(t, Top10(textWithDigits), 0)
+		}
+	})
 	t.Run("positive test", func(t *testing.T) {
 		if taskWithAsteriskIsCompleted {
 			expected := []string{"он", "а", "и", "что", "ты", "не", "если", "то", "его", "кристофер", "робин", "в"}
@@ -57,4 +65,16 @@ func TestTop10(t *testing.T) {
 			assert.ElementsMatch(t, expected, Top10(text))
 		}
 	})
+
+	t.Run("without special chars", func(t *testing.T) {
+		textWithSpecialChars := "cat dog, cat dog, dog"
+		if AllowSpecialChars {
+			expected := []string{"dog,", "cat", "dog"}
+			assert.Subset(t, expected, Top10(textWithSpecialChars))
+		} else {
+			expected := []string{"dog", "cat"}
+			assert.Subset(t, expected, Top10(textWithSpecialChars))
+		}
+	})
+
 }
