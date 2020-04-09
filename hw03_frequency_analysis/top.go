@@ -5,21 +5,14 @@ import (
 	"strings"
 )
 
-var AsteriskValues = true
+var AsteriskValues = false
 
 var IgnoreCase = AsteriskValues
 var IgnoreDash = AsteriskValues
 var AllowSpecialChars = !AsteriskValues
 var AllowDigitsInWords = !AsteriskValues
 
-func Top10(inputText string) []string {
-	type wordEntry struct {
-		word  string
-		count int
-	}
-
-	const top = 10
-
+func getSliceOfWords(inputText string) []string {
 	// clear special chars
 	if !AllowSpecialChars {
 		for _, clearChar := range []string{`.`, `,`, `!`, `?`, `:`, `;`, `"`, `'`, "`"} {
@@ -29,32 +22,30 @@ func Top10(inputText string) []string {
 
 	// Split the text and get a slice with words
 	re := regexp.MustCompile(`\s+`)
-	words := re.Split(inputText, -1)
+	return re.Split(inputText, -1)
+}
+
+func Top10(inputText string) []string {
+	const top = 10
+
+	words := getSliceOfWords(inputText)
 
 	// get words map and count of entries
 	resultMap := getWordCountMap(words)
 
-	// insert map values to my struct to get data sorted by key,
-	// filter values and sort it
-	wordEntries := make([]wordEntry, 0)
-	for word, count := range resultMap {
-		wordEntries = append(wordEntries, wordEntry{word, count})
+	var uniqueWords = make([]string, 0, len(resultMap))
+	for value := range resultMap {
+		uniqueWords = append(uniqueWords, value)
 	}
-	sort.Slice(wordEntries, func(i, j int) bool {
-		return wordEntries[i].count > wordEntries[j].count
+
+	sort.Slice(uniqueWords, func(i, j int) bool {
+		return resultMap[uniqueWords[i]] > resultMap[uniqueWords[j]]
 	})
 
-	//fmt.Println(wordEntries)
-
-	outputSlice := make([]string, 0)
-	for i, entry := range wordEntries {
-		if i > top-1 {
-			break
-		}
-		outputSlice = append(outputSlice, entry.word)
+	if len(uniqueWords) > top {
+		return uniqueWords[:10]
 	}
-
-	return outputSlice
+	return uniqueWords
 }
 
 // create a map, where key is a word
@@ -80,11 +71,7 @@ func getWordCountMap(words []string) map[string]int {
 		}
 
 		// increase counter or create if not exist
-		if _, ok := resultMap[word1]; !ok {
-			resultMap[word1] = 1
-		} else {
-			resultMap[word1]++
-		}
+		resultMap[word1]++
 	}
 
 	return resultMap
