@@ -23,22 +23,17 @@ func Run(tasks []Task, goroutinesNumber int, errorsLimit int) error {
 	// A channel to limit go-routines
 	concurrentGoroutines := make(chan struct{}, goroutinesNumber)
 
-	// Loop while we have tasks
-	for len(tasks) > 0 {
+	// Loop all the tasks
+	for _, task := range tasks {
 		// If number of errors is over limit - exit
 		if errorsLimit > 0 {
 			totalMutex.Lock()
 			if totalErrors >= errorsLimit {
 				totalMutex.Unlock()
-				tasks = make([]Task, 0)
-				continue
+				break
 			}
 			totalMutex.Unlock()
 		}
-
-		// Get next task and remove from array
-		task := tasks[0]
-		tasks = tasks[1:]
 
 		// Run go-routine
 		wg.Add(1)
